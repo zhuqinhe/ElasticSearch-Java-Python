@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- log4j2使用说明如下：
+private static final Logger logger = LogManager.getLogger(实际类名.class.getName());
+
+2、日志说明：
+（1）请根据实际情况配置各项参数
+（2）需要注意日志文件备份数和日志文件大小，注意预留目录空间
+（3）实际部署的时候backupFilePatch变量需要修改成Linux目录
+ -->
+ <!-- status="OFF"，可以去掉，它的含义为是否记录log4j2本身的event信息，默认是OFF -->
+<configuration status="trace" monitorInterval="300">
+    <Properties>
+        <Property name="fileName">search.log</Property>
+        <Property name="backupFilePatch">/opt/hoob/NE/search-server/logs</Property>
+      </Properties>
+    <!--先定义所有的appender-->
+    <appenders>
+        <!--这个输出控制台的配置-->
+        <Console name="Console" target="SYSTEM_OUT">
+             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY" />
+            <!--这个都知道是输出日志的格式-->
+            <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level T:[%thread] U:[%X{X-USERE-ID}] S:[%X{X-SESSION-ID}] E:[%X{X-EXTRA-JSON}] %class{36} -- [%M:%L] -- %msg%n"  />
+        </Console>
+        
+        <!--这个会打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFile" fileName="${backupFilePatch}/search.log" immediateFlush="true"
+            filePattern="${backupFilePatch}/$${date:yyyy-MM}/debug-%d{yyyyMMddHHmmssSSS}.tar.gz">
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level T:[%thread] U:[%X{X-USERE-ID}] S:[%X{X-SESSION-ID}] E:[%X{X-EXTRA-JSON}] %class{36} -- [%M:%L] -- %msg%n"  />
+           	<Policies>     
+	            <!-- 日志文件大小 -->
+	            <SizeBasedTriggeringPolicy size="200MB" />
+            </Policies> 
+            <!-- 最多保留文件数 -->
+	         <DefaultRolloverStrategy max="10"/>    
+        </RollingFile> 
+        <RollingFile name="RollingFileError" fileName="${backupFilePatch}/error.log" immediateFlush="true"
+            filePattern="${backupFilePatch}/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="error" onMatch="ACCEPT"  onMismatch="DENY" />
+            <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level T:[%thread] U:[%X{X-USERE-ID}] S:[%X{X-SESSION-ID}] E:[%X{X-EXTRA-JSON}] %class{36} -- [%M:%L] -- %msg%n"  />
+            <Policies>     
+            	<!-- 日志文件大小 -->          
+                <SizeBasedTriggeringPolicy size="200MB" />
+            </Policies>
+        </RollingFile>
+        
+        
+        <RollingFile name="UserRollingFileError" fileName="${backupFilePatch}/userInfo-error.log" filePattern="${backupFilePatch}/$${date:yyyy-MM}/userInfo-error-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[%date{yyyy-MM-dd HH:mm:ss.SSS}]%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="UserInfoLog" fileName="${backupFilePatch}/userInfo.log" filePattern="${backupFilePatch}/$${date:yyyy-MM}/userInfo-%d{yyyy-MM-dd}-%i.log">
+		<ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[%date{yyyy-MM-dd HH:mm:ss.SSS}]%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile >
+        <RollingFile name="SysInfoLog" fileName="${backupFilePatch}/sysInfo.log" filePattern="${backupFilePatch}/$${date:yyyy-MM}/userInfo-%d{yyyy-MM-dd}-%i.log">
+		<ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[%date{yyyy-MM-dd HH:mm:ss.SSS}]%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile >
+      
+    </appenders>
+    
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <loggers>
+    	 <logger name="UserInfoLogUtil" level="INFO"  additivity="false">
+            <appender-ref ref="UserInfoLog" />
+         </logger>
+         <logger name="SysInfoLog" level="INFO"  additivity="false">
+            <appender-ref ref="SysInfoLog" />
+         </logger>
+        <!--建立一个默认的root的logger-->       
+        <Root level="info">
+            <AppenderRef ref="Console" />
+			<AppenderRef ref="RollingFile" />
+            <AppenderRef ref="RollingFileError" />
+        </Root>
+                
+        <!-- spring日志输出级别为warn -->
+        <logger name="org.springframework" level="warn" additivity="false">
+            <appender-ref ref="Console"/>
+			<AppenderRef ref="RollingFile" />
+			<AppenderRef ref="RollingFileError" />
+        </logger>
+        <!-- hibernate日志输出级别为warn -->
+        <logger name="org.hibernate" level="warn" additivity="false">
+            <appender-ref ref="Console"/>
+			<AppenderRef ref="RollingFile" />
+			<AppenderRef ref="RollingFileError" />
+        </logger>
+    </loggers>
+</configuration>
