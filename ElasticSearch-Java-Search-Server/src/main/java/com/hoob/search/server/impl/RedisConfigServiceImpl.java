@@ -30,11 +30,9 @@ public class RedisConfigServiceImpl implements InitializingBean, RedisConfigServ
 	}
 
 	private void init() {
-		if (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows) {
-			fileName = Constants.WIN_REDIS_FILE_NAME;
-		} else {
-			fileName = Constants.LIUNX_REDIS_FILE_NAME;
-		}
+
+		fileName = Constants.LIUNX_REDIS_FILE_NAME;
+
 
 		File file = new File(fileName);
 		try {
