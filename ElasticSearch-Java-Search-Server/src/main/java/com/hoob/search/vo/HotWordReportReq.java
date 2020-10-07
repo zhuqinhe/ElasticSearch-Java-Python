@@ -2,6 +2,9 @@ package com.hoob.search.vo;
 
 import java.io.Serializable;
 
+/**
+ * @author zhuqinhe
+ */
 public class HotWordReportReq implements Serializable {
 	/**
 	 * 

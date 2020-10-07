@@ -2,6 +2,9 @@ package com.hoob.search.common;
 
 import org.elasticsearch.client.transport.TransportClient;
 
+/**
+ * @author zhuqinhe
+ */
 public class DbQueue {
 	private volatile static DbHotWordReportReqQueue dbHotWordReportReqQueue;
 	static{

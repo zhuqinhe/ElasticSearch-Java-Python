@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import com.hoob.search.utils.ObjectUtils;
 import com.hoob.search.vo.HotWordReportReq;
+/**
+ * @author zhuqinhe
+ */
 @Service("syncSearchReportServer")
 public class SyncSearchReportServerImpl implements InitializingBean, SyncSearchReportServer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SyncSearchReportServerImpl.class);

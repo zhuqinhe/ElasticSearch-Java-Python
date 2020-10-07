@@ -16,6 +16,9 @@ import org.springframework.stereotype.Repository;
 import com.hoob.search.dao.ReportSearchDao;
 import com.hoob.search.vo.HotWordReportReq;
 
+/**
+ * @author zhuqinhe
+ */
 @Repository("reportSearchDao")
 public class ReportSearchDaoImpl implements ReportSearchDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReportSearchDaoImpl.class);

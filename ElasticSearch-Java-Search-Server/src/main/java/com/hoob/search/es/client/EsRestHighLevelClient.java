@@ -25,6 +25,9 @@ import com.hoob.search.utils.FileUtils;
 import com.hoob.search.utils.OsCheck;
 import com.hoob.search.utils.StringUtils;
 
+/**
+ * @author zhuqinhe
+ */
 public class EsRestHighLevelClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EsRestHighLevelClient.class);
@@ -71,6 +74,7 @@ public class EsRestHighLevelClient {
 					singleClient = new RestHighLevelClient(
 							RestClient.builder(new HttpHost(httpAddress, httpPort, "http"))
 									.setHttpClientConfigCallback(new HttpClientConfigCallback() {
+										@Override
 										public HttpAsyncClientBuilder customizeHttpClient(
 												HttpAsyncClientBuilder httpClientBuilder) {
 											httpClientBuilder.disableAuthCaching();

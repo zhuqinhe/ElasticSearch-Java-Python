@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import com.hoob.search.vo.HotWordReportReq;
 
+/**
+ * @author zhuqinhe
+ */
 public class DbHotWordReportReqQueue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DbHotWordReportReqQueue.class);
     private BlockingQueue<String> blockingQueue = new LinkedBlockingQueue<String>();
